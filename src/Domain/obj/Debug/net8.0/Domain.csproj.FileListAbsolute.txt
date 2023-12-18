@@ -1,6 +1,12 @@
-/home/riann/dev/sass-blog/src/Domain/obj/Debug/net8.0/Domain.csproj.AssemblyReference.cache
+/home/riann/dev/sass-blog/src/Domain/bin/Debug/net8.0/Domain.deps.json
+/home/riann/dev/sass-blog/src/Domain/bin/Debug/net8.0/Domain.dll
+/home/riann/dev/sass-blog/src/Domain/bin/Debug/net8.0/Domain.pdb
 /home/riann/dev/sass-blog/src/Domain/obj/Debug/net8.0/Domain.GeneratedMSBuildEditorConfig.editorconfig
 /home/riann/dev/sass-blog/src/Domain/obj/Debug/net8.0/Domain.AssemblyInfoInputs.cache
 /home/riann/dev/sass-blog/src/Domain/obj/Debug/net8.0/Domain.AssemblyInfo.cs
 /home/riann/dev/sass-blog/src/Domain/obj/Debug/net8.0/Domain.csproj.CoreCompileInputs.cache
 /home/riann/dev/sass-blog/src/Domain/obj/Debug/net8.0/Domain.sourcelink.json
+/home/riann/dev/sass-blog/src/Domain/obj/Debug/net8.0/Domain.dll
+/home/riann/dev/sass-blog/src/Domain/obj/Debug/net8.0/refint/Domain.dll
+/home/riann/dev/sass-blog/src/Domain/obj/Debug/net8.0/Domain.pdb
+/home/riann/dev/sass-blog/src/Domain/obj/Debug/net8.0/ref/Domain.dll
