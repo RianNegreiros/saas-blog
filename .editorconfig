@@ -1,0 +1,21 @@
+[**/*.cs]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+csharp_indent_case_contents = true
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+
+[**/*.ts]
+charset = utf-8
+indent_style = tab
+indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+quote_type = double
