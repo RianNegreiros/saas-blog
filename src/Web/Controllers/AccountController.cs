@@ -1,7 +1,5 @@
 using Domain.Entities;
 using Infrastructure.Data;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.DTOs;
@@ -9,78 +7,52 @@ using Web.DTOs;
 [Route("api/[controller]")]
 public class AccountController : ControllerBase
 {
-  private readonly ApplicationDbContext _dbContext;
+	private readonly ApplicationDbContext _dbContext;
+	private readonly ILogger<AccountController> _logger;
 
-  public AccountController(ApplicationDbContext dbContext)
-  {
-    _dbContext = dbContext;
-  }
+	public AccountController(ApplicationDbContext dbContext, ILogger<AccountController> logger)
+	{
+		_dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
+	}
 
-  [HttpGet("login/{provider}")]
-  public IActionResult Login(string provider)
-  {
-    return Challenge(new AuthenticationProperties { RedirectUri = "/" }, provider);
-  }
+	[HttpPost("register")]
+	public async Task<IActionResult> Register([FromBody] UserRegistrationModel model)
+	{
+		if (model == null || string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
+		{
+			return UnprocessableEntity(new { message = "Invalid Data" });
+		}
+		try
+		{
+			if (await _dbContext.Users.AnyAsync(u => u.Email == model.Email))
+			{
+				return BadRequest(new { message = "Invalid Data" });
+			}
 
-  [HttpPost("logout")]
-  public IActionResult Logout()
-  {
-    return SignOut(new AuthenticationProperties { RedirectUri = "/" },
-        CookieAuthenticationDefaults.AuthenticationScheme);
-  }
+			string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
 
-  [HttpPost("register")]
-  public async Task<IActionResult> Register([FromBody] UserRegistrationModel model)
-  {
-    try
-    {
-      if (await _dbContext.Users.AnyAsync(u => u.Email == model.Email))
-      {
-        return BadRequest("Email is already registered.");
-      }
+			var newUser = new User
+			{
+				Name = model.Name,
+				Email = model.Email,
+				Password = hashedPassword,
+			};
 
-      string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
+			_dbContext.Users.Add(newUser);
+			await _dbContext.SaveChangesAsync();
 
-      var newUser = new User
-      {
-        Name = model.Name,
-        Email = model.Email,
-        Password = hashedPassword,
-      };
-
-      _dbContext.Users.Add(newUser);
-      await _dbContext.SaveChangesAsync();
-
-      return Ok("Registration successul");
-    }
-    catch (Exception ex)
-    {
-      return StatusCode(50, "Anerror occurred while processing your request.");
-    }
-  }
-
-  [HttpPost("login")]
-  public async Task<IActionResult> Login([FromBody] UserLoginModel model)
-  {
-    try
-    {
-      var user = await _dbContext.Users.SingleOrDefaultAsync(U => U.Email == model.Email);
-
-      if (user == null)
-      {
-        return NotFound("User not found.");
-      }
-
-      if (!BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
-      {
-        return Unauthorized("Invalid password.");
-      }
-
-      return Ok("Login successful.");
-    }
-    catch (Exception ex)
-    {
-      return StatusCode(500, "An error occurred while processing your request.");
-    }
-  }
+			return Ok(new
+			{
+				newUser.Email,
+				newUser.Name,
+				Password = hashedPassword,
+			});
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error creatring user");
+			return StatusCode(500, "Anerror occurred while processing your request.");
+		}
+	}
 }
