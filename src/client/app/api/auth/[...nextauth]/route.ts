@@ -1,30 +1,33 @@
-import NextAuth, { AuthOptions } from "next-auth"
-import GithubProvider from "next-auth/providers/github"
-import GoogleProvider from "next-auth/providers/google"
-import CredentialsProvider from "next-auth/providers/credentials"
+import NextAuth, { AuthOptions } from 'next-auth'
+import GithubProvider from 'next-auth/providers/github'
+import GoogleProvider from 'next-auth/providers/google'
+import CredentialsProvider from 'next-auth/providers/credentials'
 
-const authOptions: AuthOptions = {
+export const authOptions: AuthOptions = {
 	providers: [
-		GithubProvider({ clientId: "", clientSecret: "" }),
-		GoogleProvider({ clientId: "", clientSecret: "" }),
+		GithubProvider({ clientId: '', clientSecret: '' }),
+		GoogleProvider({ clientId: '', clientSecret: '' }),
 		CredentialsProvider({
-			name: "credentials",
+			name: 'credentials',
 			credentials: {
-				email: { type: "text" },
-				password: { type: "password" },
+				email: { type: 'text' },
+				password: { type: 'password' },
 			},
 			authorize: async (credentials, req) => {
 				if (!credentials || !credentials.email || !credentials.password) {
 					return null
 				}
 
-				const response = await fetch(`${process.env.API_URL}/register`, {
-					method: "POST",
-					body: JSON.stringify(credentials),
-					headers: {
-						"Content-Type": "application/json",
-					},
-				})
+				const response = await fetch(
+					`${process.env.API_URL}/api/account/login`,
+					{
+						method: 'POST',
+						body: JSON.stringify(credentials),
+						headers: {
+							'Content-Type': 'application/json',
+						},
+					}
+				)
 
 				if (response.ok) {
 					const user = await response.json()
