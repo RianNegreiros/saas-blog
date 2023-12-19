@@ -16,6 +16,39 @@ public class AccountController : ControllerBase
 		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 	}
 
+	[HttpPost("login")]
+	public async Task<IActionResult> Login([FromBody] UserLoginModel model)
+	{
+		try
+		{
+			if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
+			{
+				return UnprocessableEntity(new { message = "Invalid Data. Email and password are required." });
+			}
+
+			User? user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+
+			if (user == null)
+			{
+				return BadRequest(new { message = "User not found." });
+			}
+
+			bool isPasswordValid = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
+
+			if (!isPasswordValid)
+			{
+				return BadRequest(new { message = "Invalid password." });
+			}
+
+			return Ok(user);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, $"Error creating user. Details: {ex.Message}");
+			return StatusCode(500, "An error occurred while processing your request.");
+		}
+	}
+
 	[HttpPost("register")]
 	public async Task<IActionResult> Register([FromBody] UserRegistrationModel model)
 	{
