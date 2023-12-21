@@ -11,16 +11,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		modelBuilder.Entity<Blog>()
-		.HasOne(b => b.User)
-		.WithMany(u => u.Blogs)
-		.HasForeignKey(b => b.UserId)
-		.OnDelete(DeleteBehavior.Cascade);
-
-		modelBuilder.Entity<Blog>()
-			.HasOne(b => b.Category)
-			.WithMany(c => c.Blogs)
-			.HasForeignKey(b => b.CategoryId)
-			.OnDelete(DeleteBehavior.Restrict);
+		base.OnModelCreating(modelBuilder);
 	}
 }
