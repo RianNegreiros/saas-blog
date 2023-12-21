@@ -4,7 +4,7 @@ export const GET = async (req: Request, { params }: { params: { id: string } }) 
 	try {
 		const id = params.id
 		const response = await fetch(
-			`${process.env.API_URL}/api/category/${id}`,
+			`${process.env.API_URL}/api/categories/${id}`,
 			{
 				method: 'GET',
 				headers: {
