@@ -1,6 +1,6 @@
-.PHONY: run migrate database
+.PHONY: run migration database
 
-migrate: 
+migration: 
 			dotnet ef --project src/Infrastructure/Infrastructure.csproj --startup-project src/Web/Web.csproj migrations add $(name)
 				dotnet ef database update --project src/Infrastructure/Infrastructure.csproj --startup-project src/Web/Web.csproj
 
