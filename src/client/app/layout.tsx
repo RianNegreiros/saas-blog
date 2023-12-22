@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Provider from './components/Provider'
 import Appbar from './components/Appbar'
+import Footer from './components/Footer'
 
 export const metadata: Metadata = {
   title: 'Blogify',
@@ -19,6 +20,7 @@ export default function RootLayout({
         <Provider>
           <Appbar />
           <main className="flex-1">{children}</main>
+          <Footer />
         </Provider>
       </body>
     </html>
