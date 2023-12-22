@@ -1,2 +1,9 @@
 node_modules
 .next
+Domain
+Infrastructure
+Web
+
+**/*.json
+**/*.yml
+**/*.config.*

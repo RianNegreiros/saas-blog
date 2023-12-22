@@ -1,13 +1,9 @@
-'use client'
-
-import { useSession } from 'next-auth/react'
+import HomeSection from './components/HomeSection'
 
 export default function Home() {
-  const { data, status } = useSession()
   return (
     <main>
-      <div>Home</div>
-      <div>{JSON.stringify(data)}</div>
+      <HomeSection />
     </main>
   )
 }

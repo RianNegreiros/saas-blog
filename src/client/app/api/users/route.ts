@@ -1,16 +1,13 @@
-import { generateErrorMessage, generateSuccessMessage } from "@/lib/helpers"
+import { generateErrorMessage, generateSuccessMessage } from '@/lib/helpers'
 
 export const GET = async () => {
 	try {
-		const response = await fetch(
-			`${process.env.API_URL}/api/users`,
-			{
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			}
-		)
+		const response = await fetch(`${process.env.API_URL}/api/users`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
 
 		if (response.ok) {
 			const users = await response.json()
