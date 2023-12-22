@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - '5000:5000'
     depends_on:
       - postgres
   postgres:
@@ -14,4 +14,4 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
     ports:
-      - "5432:5432"
+      - '5432:5432'
