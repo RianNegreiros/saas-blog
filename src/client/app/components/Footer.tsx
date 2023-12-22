@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import { IconType } from "react-icons"
-import Logo from "./Logo"
+import { IconType } from 'react-icons'
+import Logo from './Logo'
 import { FaInstagram, FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa'
 const links = [FaGithub, FaInstagram, FaLinkedin, FaTwitter]
 const IconContainer = (props: { icon: IconType }) => {
@@ -35,4 +35,4 @@ const Footer = () => {
   )
 }
 
-export default Footer;
+export default Footer
