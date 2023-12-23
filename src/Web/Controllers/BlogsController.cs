@@ -19,6 +19,21 @@ public class BlogsController : ControllerBase
 		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 	}
 
+	[HttpGet("search")]
+	public async Task<IActionResult> SearchBlogs([FromQuery] string title)
+	{
+		if (string.IsNullOrEmpty(title))
+		{
+			return BadRequest("Please provide a tible to search for.");
+		}
+
+		List<Blog> blogs = await _dbContext.Blogs
+			.Where(b => b.Title.Contains(title))
+			.ToListAsync();
+
+		return Ok(blogs);
+	}
+
 	[HttpGet("{id}")]
 	public async Task<IActionResult> GetBlogById(int id)
 	{
