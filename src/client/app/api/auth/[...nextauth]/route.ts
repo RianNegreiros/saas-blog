@@ -13,7 +13,7 @@ export const authOptions: AuthOptions = {
 				email: { type: 'text' },
 				password: { type: 'password' },
 			},
-			authorize: async (credentials, req) => {
+			authorize: async (credentials) => {
 				if (!credentials || !credentials.email || !credentials.password) {
 					return null
 				}
@@ -38,6 +38,14 @@ export const authOptions: AuthOptions = {
 		}),
 	],
 	secret: process.env.NEXTAUTH_SECRET,
+	callbacks: {
+		session({ session, token }) {
+			if (session.user && token.sub) {
+				session.user.id = token.sub
+			}
+			return session
+		}
+	}
 }
 
 const handler = NextAuth(authOptions)
