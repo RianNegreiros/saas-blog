@@ -24,18 +24,22 @@ const AddBlog = () => {
       title: headingRef.current?.innerText,
       description: convertEditorToHTML(),
       userId: session?.user.id,
-      categoryId: data.category
+      categoryId: data.category,
     })
     formData.append('postData', postData)
-    formData.append("image", data.image[0])
+    formData.append('image', data.image[0])
     try {
-      toast.loading("Sending your post...", { id: "postData" })
+      toast.loading('Sending your post...', { id: 'postData' })
 
-      await fetch(`${process.env.API_URL}/api/blogs`, { method: "POST", body: formData, cache: "no-store" })
+      await fetch(`${process.env.API_URL}/api/blogs`, {
+        method: 'POST',
+        body: formData,
+        cache: 'no-store',
+      })
 
-      toast.success("Post sent", { id: "postData" })
+      toast.success('Post sent', { id: 'postData' })
     } catch (err) {
-      toast.error("Error sending post", { id: "postData" })
+      toast.error('Error sending post', { id: 'postData' })
     }
   }
 
@@ -56,7 +60,7 @@ const AddBlog = () => {
 
   return (
     <section className="w-full">
-      <Toaster position='top-right' />
+      <Toaster position="top-right" />
       <div className="flex justify-between p-4 items-center">
         <div className="w-24">
           <span className="font-extrabold mx-3">Author:</span>
@@ -89,18 +93,18 @@ const AddBlog = () => {
         <input
           type="file"
           className="md:w-[500px] sm:w-[300px] m-auto text-slate-900 bg-gray-100 p-4 rounded-xl font-semibold"
-          {...register("image", {
+          {...register('image', {
             required: true,
             onChange(event) {
               setImageUrl(URL.createObjectURL(event.target.files[0]))
-            }
+            },
           })}
         />
       </div>
       <div className="w-full flex my-5">
         <select
           className="md:w-[500px] sm:w-[300px] m-auto text-slate-900 bg-gray-100 p-4 rounded-xl font-semibold"
-          {...register("category", { required: true })}
+          {...register('category', { required: true })}
         >
           {categories.map((item) => (
             <option value={item.id}>{item.name}</option>
