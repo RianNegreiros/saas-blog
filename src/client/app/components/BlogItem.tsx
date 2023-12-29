@@ -12,7 +12,7 @@ import Link from 'next/link'
 type Props = BlogType
 
 function getTextFromHtml(html: string) {
-  const elm = document.createElement("span")
+  const elm = document.createElement('span')
   elm.innerHTML = html
   return elm.innerText.slice(0, 300)
 }
@@ -38,10 +38,13 @@ const BlogItem = (props: Props) => {
           {getTextFromHtml(props.description)}
         </p>
       </CardContent>
-      <CardFooter className="w-full h-full =-3">
-        <Link href={`/blogs/view/${props.id}`} className="ml-auto mt-auto border=[1px] p-3 rounded-lg hover:bg-violet-600 hover:text-white duration-500">
+      <CardFooter className="w-full h-full p-3">
+        <Link
+          href={`/blogs/view/${props.id}`}
+          className="ml-auto mt-auto border-[1px] p-3 rounded-lg hover:bg-violet-600 hover:text-white duration-500"
+        >
           View More
-        </Link>{" "}
+        </Link>{' '}
       </CardFooter>
     </Card>
   )

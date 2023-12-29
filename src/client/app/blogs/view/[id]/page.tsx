@@ -13,8 +13,8 @@ const BlogViewPage = async ({ params }: { params: { id: string } }) => {
         height={1000}
         className="md:w-2/4 xs:w-3/4 mx-auto my-8 drop-shadow-xl rounded-lg"
       />
-      <div className='md:w-2/4 xs:w-3/4 mx-auto my-8'>
-        <h2 className='text-5xl text-center'>{blog.title}</h2>
+      <div className="md:w-2/4 xs:w-3/4 mx-auto my-8">
+        <h2 className="text-5xl text-center">{blog.title}</h2>
       </div>
       <section
         className="md:w-2/4 xs:w-3/4 mx-auto my-8"
