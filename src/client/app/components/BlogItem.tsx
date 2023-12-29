@@ -5,18 +5,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { BlogType } from '@/lib/types'
 import Image from 'next/image'
 
-type Props = {
-  id: string
-  title: string
-  description: string
-  imageUrl: string
-  userId: string
-  createdAt: string
-  updatedAt: string
-  categoryId: string
-}
+type Props = BlogType
 
 const BlogItem = (props: Props) => {
   return (

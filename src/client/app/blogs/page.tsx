@@ -1,5 +1,7 @@
 import { FaSearch } from 'react-icons/fa'
 import BlogItem from '../components/BlogItem'
+import { getAllBlogs } from '@/lib/helpers'
+import { BlogType } from '@/lib/types'
 
 const categories = [
   {
@@ -8,20 +10,8 @@ const categories = [
   },
 ]
 
-const blogs = [
-  {
-    id: '1',
-    title: 'Title',
-    description: 'Blog description',
-    userId: '1',
-    categoryId: '1',
-    imageUrl: 'image url',
-    createdAt: '',
-    updatedAt: '',
-  },
-]
-
-const BlogPage = () => {
+const BlogPage = async () => {
+  const blogs = await getAllBlogs()
   return (
     <section className="w-full h-full">
       <div className="flex flex-col gap-3 my-10 p-8"></div>
@@ -51,7 +41,7 @@ const BlogPage = () => {
         </div>
       </nav>
       <div className="flex gap-4 flex-wrap justify-center my-1">
-        {blogs.map((blog) => (
+        {blogs.map((blog: BlogType) => (
           <BlogItem {...blog} key={blog.id} />
         ))}
       </div>
