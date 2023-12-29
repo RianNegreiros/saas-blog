@@ -7,8 +7,15 @@ import {
 } from '@/components/ui/card'
 import { BlogType } from '@/lib/types'
 import Image from 'next/image'
+import Link from 'next/link'
 
 type Props = BlogType
+
+function getTextFromHtml(html: string) {
+  const elm = document.createElement("span")
+  elm.innerHTML = html
+  return elm.innerText.slice(0, 300)
+}
 
 const BlogItem = (props: Props) => {
   return (
@@ -28,13 +35,13 @@ const BlogItem = (props: Props) => {
       <CardTitle className="p-3">{props.title}</CardTitle>
       <CardContent className="w-full text-slate-900">
         <p className="tracking-wide w-full px-2 py-1 text-left">
-          {props.description}
+          {getTextFromHtml(props.description)}
         </p>
       </CardContent>
       <CardFooter className="w-full h-full =-3">
-        <button className="ml-auto mt-auto border=[1px] p-3 rounded-lg hover:bg-violet-600 hover:text-white duration-500">
+        <Link href={`/blogs/view/${props.id}`} className="ml-auto mt-auto border=[1px] p-3 rounded-lg hover:bg-violet-600 hover:text-white duration-500">
           View More
-        </button>
+        </Link>{" "}
       </CardFooter>
     </Card>
   )
