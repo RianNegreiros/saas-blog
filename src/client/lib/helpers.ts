@@ -33,3 +33,11 @@ export const getBlogById = async (id: string) => {
 	const data = await res.json()
 	return data.blog
 }
+
+export const getUserById = async (id: string) => {
+	const res = await fetch(`${apiUrl}/users/${id}`, {
+		next: { revalidate: 100 },
+	})
+	const data = await res.json()
+	return data
+}
