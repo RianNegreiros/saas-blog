@@ -41,3 +41,11 @@ export const getUserById = async (id: string) => {
 	const data = await res.json()
 	return data
 }
+
+export const getAllCategories = async () => {
+	const res = await fetch(`${apiUrl}/categories`, {
+		cache: 'no-store',
+	})
+	const data = await res.json()
+	return Array.of(data)
+}
