@@ -8,7 +8,7 @@ import { useRef, useState } from 'react'
 import { Editor } from 'react-draft-wysiwyg'
 import { useForm } from 'react-hook-form'
 import draftJsToHtml from 'draftjs-to-html'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 const AddBlog = () => {
   const { data: session } = useSession()
@@ -60,7 +60,6 @@ const AddBlog = () => {
 
   return (
     <section className="w-full">
-      <Toaster position="top-right" />
       <div className="flex justify-between p-4 items-center">
         <div className="w-24">
           <span className="font-extrabold mx-3">Author:</span>
@@ -107,7 +106,9 @@ const AddBlog = () => {
           {...register('category', { required: true })}
         >
           {categories.map((item) => (
-            <option value={item.id} key={item.id}>{item.name}</option>
+            <option value={item.id} key={item.id}>
+              {item.name}
+            </option>
           ))}
         </select>
       </div>
