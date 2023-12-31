@@ -12,19 +12,20 @@ import toast, { Toaster } from 'react-hot-toast'
 import draftToHtml from 'draftjs-to-html'
 import { Editor } from 'react-draft-wysiwyg'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
-import { getAllCategories, getBlogById } from '@/lib/helpers'
+import { getBlogById, updateBlog } from '@/lib/helpers'
 import { BlogType } from '@/lib/types'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const EditBlog = async ({ params }: { params: { id: string } }) => {
-  const { data: session } = useSession()
-  const blog = await getBlogById(params.id)
-  const categories = await getAllCategories()
-
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const headingRef = useRef<HTMLHeadingElement | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const { data: session } = useSession()
 
   useEffect(() => {
-    getBlogById(session?.user.id ?? '')
+    setIsLoading(true)
+    toast.loading('Updating blog details', { id: 'loading' })
+    getBlogById(params.id)
       .then((data: BlogType) => {
         const contentBlocks = convertFromHTML(data.description)
         const contentState = ContentState.createFromBlockArray(
@@ -34,22 +35,30 @@ const EditBlog = async ({ params }: { params: { id: string } }) => {
         setEditorState(initialState)
         if (headingRef && headingRef.current)
           headingRef.current.innerText = data.title
+        setIsLoading(false)
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        toast.error('Error updating blog', { id: 'loading' })
+      })
+      .finally(() => {
+        setIsLoading(false)
+        toast.success('Blog updated', { id: 'loading' })
+      })
   }, [])
 
   const handlePost = async (data: any) => {
+    const postData = {
+      title: headingRef.current?.innerText,
+      description: convertEditorToHTML(),
+    }
     try {
-      toast.loading('Sending your post...', { id: 'postData' })
+      toast.loading('Updating your post...', { id: 'postUpdated' })
 
-      await fetch(`${process.env.API_URL}/api/blogs`, {
-        method: 'PUT',
-        cache: 'no-store',
-      })
+      await updateBlog(params.id, postData)
 
-      toast.success('Post sent', { id: 'postData' })
+      toast.success('Post updated', { id: 'postUpdated' })
     } catch (err) {
-      toast.error('Error sending post', { id: 'postData' })
+      toast.error('Error updating post', { id: 'postUpdated' })
     }
   }
 
@@ -76,6 +85,11 @@ const EditBlog = async ({ params }: { params: { id: string } }) => {
           Publish
         </button>
       </div>
+      {isLoading && (
+        <p>
+          <Skeleton className="w-[300px] h-[20px] rounded-lg mx-auto" />
+        </p>
+      )}
       <h1
         ref={headingRef}
         contentEditable={true}
