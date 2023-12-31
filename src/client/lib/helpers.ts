@@ -49,13 +49,3 @@ export const getAllCategories = async () => {
 	const data = await res.json()
 	return Array.of(data)
 }
-
-export const updateBlog = async (id: string, postData: any) => {
-	const res = await fetch(`${process.env.API_URL}/blogs${id}`, {
-		cache: 'no-store',
-		method: 'PUT',
-		body: JSON.stringify({ ...postData }),
-	})
-	const data = await res.json()
-	return data.blog
-}

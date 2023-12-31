@@ -8,15 +8,25 @@ import {
 } from 'draft-js'
 import { useSession } from 'next-auth/react'
 import { useState, useRef, useEffect } from 'react'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import draftToHtml from 'draftjs-to-html'
 import { Editor } from 'react-draft-wysiwyg'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
-import { getBlogById, updateBlog } from '@/lib/helpers'
 import { BlogType } from '@/lib/types'
 import { Skeleton } from '@/components/ui/skeleton'
+import { getBlogById } from '@/lib/helpers'
 
-const EditBlog = async ({ params }: { params: { id: string } }) => {
+const updateBlog = async (id: string, postData: any) => {
+  const res = await fetch(`${process.env.API_URL}/blogs${id}`, {
+    cache: 'no-store',
+    method: 'PUT',
+    body: JSON.stringify({ ...postData }),
+  })
+  const data = await res.json()
+  return data.blog
+}
+
+const EditBlog = ({ params }: { params: { id: string } }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const headingRef = useRef<HTMLHeadingElement | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -72,7 +82,6 @@ const EditBlog = async ({ params }: { params: { id: string } }) => {
 
   return (
     <section className="w-full">
-      <Toaster position="top-right" />
       <div className="flex justify-between p-4 items-center">
         <div className="w-24">
           <span className="font-extrabold mx-3">Author:</span>
