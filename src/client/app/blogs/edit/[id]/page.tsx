@@ -44,7 +44,7 @@ const EditBlog = async ({ params }: { params: { id: string } }) => {
         setIsLoading(false)
         toast.success('Blog updated', { id: 'loading' })
       })
-  }, [])
+  }, [params.id])
 
   const handlePost = async (data: any) => {
     const postData = {

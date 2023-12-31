@@ -107,7 +107,7 @@ const AddBlog = () => {
           {...register('category', { required: true })}
         >
           {categories.map((item) => (
-            <option value={item.id}>{item.name}</option>
+            <option value={item.id} key={item.id}>{item.name}</option>
           ))}
         </select>
       </div>
