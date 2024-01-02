@@ -6,25 +6,14 @@ using Web.DTOs;
 
 namespace Web.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class BlogsController : ControllerBase
+public class BlogsController(ApplicationDbContext dbContext, ILogger<BlogsController> logger) : BaseController(dbContext, logger)
 {
-	private readonly ApplicationDbContext _dbContext;
-	private readonly ILogger<AccountController> _logger;
-
-	public BlogsController(ApplicationDbContext dbContext, ILogger<AccountController> logger)
-	{
-		_dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
-	}
-
 	[HttpGet("search")]
 	public async Task<IActionResult> SearchBlogs([FromQuery] string title)
 	{
 		if (string.IsNullOrEmpty(title))
 		{
-			return BadRequest("Please provide a tible to search for.");
+			return BadRequest("Please provide a title to search for.");
 		}
 
 		List<Blog> blogs = await _dbContext.Blogs
@@ -91,7 +80,9 @@ public class BlogsController : ControllerBase
 				Description = model.Description,
 				UserId = user.Id,
 				CategoryId = category.Id,
-				ImageUrl = model.ImageUrl
+				ImageUrl = model.ImageUrl,
+				CreatedAt = DateTime.UtcNow,
+				UpdatedAt = DateTime.UtcNow
 			};
 
 			_dbContext.Add(newBlog);
@@ -132,6 +123,7 @@ public class BlogsController : ControllerBase
 
 		blog.Title = model.Title;
 		blog.Description = model.Description;
+		blog.UpdatedAt = DateTime.UtcNow;
 		await _dbContext.SaveChangesAsync();
 
 		return Ok(

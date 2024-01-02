@@ -4,18 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.DTOs;
 
-[Route("api/[controller]")]
-public class AccountController : ControllerBase
+namespace Web.Controllers;
+
+public class AccountController(ApplicationDbContext dbContext, ILogger<AccountController> logger) : BaseController(dbContext, logger)
 {
-	private readonly ApplicationDbContext _dbContext;
-	private readonly ILogger<AccountController> _logger;
-
-	public AccountController(ApplicationDbContext dbContext, ILogger<AccountController> logger)
-	{
-		_dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
-	}
-
 	[HttpPost("login")]
 	public async Task<IActionResult> Login([FromBody] UserLoginModel model)
 	{

@@ -6,19 +6,8 @@ using Web.DTOs;
 
 namespace Web.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class CategoriesController : ControllerBase
+public class CategoriesController(ApplicationDbContext dbContext, ILogger<CategoriesController> logger) : BaseController(dbContext, logger)
 {
-	private readonly ApplicationDbContext _dbContext;
-	private readonly ILogger<AccountController> _logger;
-
-	public CategoriesController(ApplicationDbContext dbContext, ILogger<AccountController> logger)
-	{
-		_dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
-	}
-
 	[HttpGet("{id}")]
 	public async Task<IActionResult> GetCategory(int id)
 	{

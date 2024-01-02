@@ -5,19 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Web.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class UsersController : ControllerBase
+public class UsersController(ApplicationDbContext dbContext, ILogger<UsersController> logger) : BaseController(dbContext, logger)
 {
-	private readonly ApplicationDbContext _dbContext;
-	private readonly ILogger<AccountController> _logger;
-
-	public UsersController(ApplicationDbContext dbContext, ILogger<AccountController> logger)
-	{
-		_dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
-	}
-
 	[HttpGet]
 	public async Task<IActionResult> GetUsers()
 	{
