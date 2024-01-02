@@ -47,8 +47,25 @@ public class BlogsController(ApplicationDbContext dbContext, ILogger<BlogsContro
 	{
 		try
 		{
-			List<Blog> blogs = await _dbContext.Blogs.ToListAsync();
-			return Ok(blogs);
+			List<BlogModel> blogDTOs = await _dbContext.Blogs
+				.Include(b => b.User)
+				.Include(b => b.Category)
+				.Select(b => new BlogModel
+				{
+					Id = b.Id,
+					Title = b.Title,
+					Description = b.Description,
+					ImageUrl = b.ImageUrl,
+					CreatedAt = b.CreatedAt,
+					UpdatedAt = b.UpdatedAt,
+					UserId = b.UserId,
+					UserName = b.User.Name,
+					CategoryId = b.CategoryId,
+					CategoryName = b.Category.Name
+				})
+				.ToListAsync();
+
+			return Ok(blogDTOs);
 		}
 		catch (Exception ex)
 		{
