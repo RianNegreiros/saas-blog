@@ -16,36 +16,18 @@ export const generateErrorMessage = (data: any, status: number) => {
 	)
 }
 
-export const getAllBlogs = async (count?: number) => {
-	const res = await fetch(`${apiUrl}/blogs`, {
-		next: { revalidate: 60 },
-	})
-	const data = await res.json()
-	const arrayData = Array.of(data)
-	if (count) {
-		return arrayData.slice(0, 6)
-	}
-	return arrayData
-}
-
 export const getBlogById = async (id: string) => {
 	const res = await fetch(`${apiUrl}/blogs/${id}`)
 	const data = await res.json()
 	return data.blog
 }
 
-export const getUserById = async (id: string) => {
-	const res = await fetch(`${apiUrl}/users/${id}`, {
-		next: { revalidate: 100 },
-	})
+export const getBlogs = async (count?: number) => {
+	const res = await fetch(`${process.env.API_URL}/blogs`)
 	const data = await res.json()
-	return data
-}
-
-export const getAllCategories = async () => {
-	const res = await fetch(`${apiUrl}/categories`, {
-		cache: 'no-store',
-	})
-	const data = await res.json()
-	return Array.of(data)
+	const arrayData = Array.of(data)
+	if (count) {
+		return arrayData.slice(0, 6)
+	}
+	return arrayData
 }

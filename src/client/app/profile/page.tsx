@@ -1,10 +1,17 @@
-import { getAllBlogs, getUserById } from '@/lib/helpers'
 import Image from 'next/image'
 import { MdEmail } from 'react-icons/md'
 import BlogItem from '../components/BlogItem'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../api/auth/[...nextauth]/route'
 import { UserType } from '@/lib/types'
+
+const getUserById = async (id: string) => {
+  const res = await fetch(`${process.env.API_URL}/users/${id}`, {
+    next: { revalidate: 100 },
+  })
+  const data = await res.json()
+  return data
+}
 
 const ProfilePage = async () => {
   const sessionData = await getServerSession(authOptions)
