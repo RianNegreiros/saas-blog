@@ -14,7 +14,6 @@ import { Editor } from 'react-draft-wysiwyg'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { BlogType } from '@/lib/types'
 import { Skeleton } from '@/components/ui/skeleton'
-import { getBlogById } from '@/lib/helpers'
 
 const updateBlog = async (id: string, postData: any) => {
   const res = await fetch(`${process.env.API_URL}/blogs${id}`, {
@@ -22,6 +21,12 @@ const updateBlog = async (id: string, postData: any) => {
     method: 'PUT',
     body: JSON.stringify({ ...postData }),
   })
+  const data = await res.json()
+  return data.blog
+}
+
+const getBlogById = async (id: string) => {
+  const res = await fetch(`${process.env.API_URL}/blogs/${id}`)
   const data = await res.json()
   return data.blog
 }

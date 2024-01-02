@@ -1,9 +1,9 @@
-import { getAllBlogs } from '@/lib/helpers'
 import Image from 'next/image'
 import BlogItem from './BlogItem'
+import { getBlogs } from '@/lib/helpers'
 
 const HomeSection = async () => {
-  const blogs = await getAllBlogs(6)
+  const blogs = await getBlogs(6)
   return (
     <section className="w-full my-4">
       <div className="w-full flex xs:flex-col md:flex-row justify-center items-center">

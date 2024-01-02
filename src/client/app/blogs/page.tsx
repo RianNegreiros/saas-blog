@@ -1,17 +1,20 @@
 import { FaSearch } from 'react-icons/fa'
 import BlogItem from '../components/BlogItem'
-import { getAllBlogs } from '@/lib/helpers'
 import { BlogType } from '@/lib/types'
+import { getBlogs } from '@/lib/helpers'
 
-const categories = [
-  {
-    id: '1',
-    name: 'Technology',
-  },
-]
+const getCategories = async () => {
+  const res = await fetch(`${process.env.API_URL}/categories`, {
+    cache: 'no-store',
+  })
+  const data = await res.json()
+  return Array.of(data)
+}
 
 const BlogPage = async () => {
-  const blogs = await getAllBlogs()
+  const categories = await getCategories()
+  const blogs = await getBlogs()
+
   return (
     <section className="w-full h-full">
       <div className="flex flex-col gap-3 my-10 p-8"></div>
