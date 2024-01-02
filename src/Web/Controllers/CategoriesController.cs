@@ -16,6 +16,7 @@ public class CategoriesController(ApplicationDbContext dbContext, ILogger<Catego
 			Category? category = await _dbContext.Categories.FirstOrDefaultAsync(u => u.Id == id);
 			if (category == null)
 			{
+				_logger.LogWarning($"Category with id {id} not found during GetCategory.");
 				return BadRequest(new { message = "Category not found." });
 			}
 			return Ok(category);
@@ -47,6 +48,7 @@ public class CategoriesController(ApplicationDbContext dbContext, ILogger<Catego
 	{
 		if (string.IsNullOrWhiteSpace(model.Name))
 		{
+			_logger.LogWarning("Invalid category creation request. Name is null or empty.");
 			return UnprocessableEntity(new { message = "Invalid Data" });
 		}
 		try
@@ -59,6 +61,8 @@ public class CategoriesController(ApplicationDbContext dbContext, ILogger<Catego
 			_dbContext.Categories.Add(newCategory);
 			await _dbContext.SaveChangesAsync();
 
+			_logger.LogInformation($"Category {newCategory.Name} successfully created.");
+
 			return Ok(new
 			{
 				newCategory.Name,
@@ -66,8 +70,8 @@ public class CategoriesController(ApplicationDbContext dbContext, ILogger<Catego
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, "Error creatring category");
-			return StatusCode(500, "Anerror occurred while processing your request.");
+			_logger.LogError(ex, "Error creating category");
+			return StatusCode(500, "An error occurred while processing your request.");
 		}
 	}
 }

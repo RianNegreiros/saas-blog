@@ -13,29 +13,32 @@ public class UsersController(ApplicationDbContext dbContext, ILogger<UsersContro
 		try
 		{
 			List<UserModel> users = await _dbContext.Users
-			.Include(u => u.Blogs)
-				.ThenInclude(b => b.Category)
-			.Select(u => new UserModel
-			{
-				Id = u.Id,
-				Name = u.Name,
-				Email = u.Email,
-				ProfileUrl = u.ProfileUrl,
-				Blogs = u.Blogs.Select(b => new BlogModel
+				.Include(u => u.Blogs)
+					.ThenInclude(b => b.Category)
+				.Select(u => new UserModel
 				{
-					Id = b.Id,
-					Title = b.Title,
-					Description = b.Description,
-					ImageUrl = b.ImageUrl,
-					CreatedAt = b.CreatedAt,
-					UpdatedAt = b.UpdatedAt,
-					UserId = b.UserId,
-					UserName = u.Name,
-					CategoryId = b.CategoryId,
-					CategoryName = b.Category.Name
-				}).ToList()
-			})
-			.ToListAsync();
+					Id = u.Id,
+					Name = u.Name,
+					Email = u.Email,
+					ProfileUrl = u.ProfileUrl,
+					Blogs = u.Blogs.Select(b => new BlogModel
+					{
+						Id = b.Id,
+						Title = b.Title,
+						Description = b.Description,
+						ImageUrl = b.ImageUrl,
+						CreatedAt = b.CreatedAt,
+						UpdatedAt = b.UpdatedAt,
+						UserId = b.UserId,
+						UserName = u.Name,
+						CategoryId = b.CategoryId,
+						CategoryName = b.Category.Name
+					}).ToList()
+				})
+				.ToListAsync();
+
+			_logger.LogInformation($"Retrieved {users.Count} users.");
+
 			return Ok(users);
 		}
 		catch (Exception ex)
@@ -51,33 +54,38 @@ public class UsersController(ApplicationDbContext dbContext, ILogger<UsersContro
 		try
 		{
 			UserModel? user = await _dbContext.Users
-			.Include(u => u.Blogs)
-			.ThenInclude(b => b.Category)
-		.Select(u => new UserModel
-		{
-			Id = u.Id,
-			Name = u.Name,
-			Email = u.Email,
-			ProfileUrl = u.ProfileUrl,
-			Blogs = u.Blogs.Select(b => new BlogModel
-			{
-				Id = b.Id,
-				Title = b.Title,
-				Description = b.Description,
-				ImageUrl = b.ImageUrl,
-				CreatedAt = b.CreatedAt,
-				UpdatedAt = b.UpdatedAt,
-				UserId = b.UserId,
-				UserName = u.Name,
-				CategoryId = b.CategoryId,
-				CategoryName = b.Category.Name
-			}).ToList()
-		})
-			.FirstOrDefaultAsync(u => u.Id == id);
+				.Include(u => u.Blogs)
+					.ThenInclude(b => b.Category)
+				.Select(u => new UserModel
+				{
+					Id = u.Id,
+					Name = u.Name,
+					Email = u.Email,
+					ProfileUrl = u.ProfileUrl,
+					Blogs = u.Blogs.Select(b => new BlogModel
+					{
+						Id = b.Id,
+						Title = b.Title,
+						Description = b.Description,
+						ImageUrl = b.ImageUrl,
+						CreatedAt = b.CreatedAt,
+						UpdatedAt = b.UpdatedAt,
+						UserId = b.UserId,
+						UserName = u.Name,
+						CategoryId = b.CategoryId,
+						CategoryName = b.Category.Name
+					}).ToList()
+				})
+				.FirstOrDefaultAsync(u => u.Id == id);
+
 			if (user == null)
 			{
+				_logger.LogWarning($"User with id {id} not found during GetUser.");
 				return BadRequest(new { message = "User not found." });
 			}
+
+			_logger.LogInformation($"Retrieved user with id {id}.");
+
 			return Ok(user);
 		}
 		catch (Exception ex)
