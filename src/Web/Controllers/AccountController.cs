@@ -4,18 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.DTOs;
 
-[Route("api/[controller]")]
-public class AccountController : ControllerBase
+namespace Web.Controllers;
+
+public class AccountController(ApplicationDbContext dbContext, ILogger<AccountController> logger) : BaseController(dbContext, logger)
 {
-	private readonly ApplicationDbContext _dbContext;
-	private readonly ILogger<AccountController> _logger;
-
-	public AccountController(ApplicationDbContext dbContext, ILogger<AccountController> logger)
-	{
-		_dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
-	}
-
 	[HttpPost("login")]
 	public async Task<IActionResult> Login([FromBody] UserLoginModel model)
 	{
@@ -23,6 +15,7 @@ public class AccountController : ControllerBase
 		{
 			if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
 			{
+				_logger.LogWarning("Invalid login request. Email or password is null or empty.");
 				return UnprocessableEntity(new { message = "Invalid Data. Email and password are required." });
 			}
 
@@ -30,6 +23,7 @@ public class AccountController : ControllerBase
 
 			if (user == null)
 			{
+				_logger.LogWarning($"User with email {model.Email} not found during login.");
 				return BadRequest(new { message = "User not found." });
 			}
 
@@ -37,6 +31,7 @@ public class AccountController : ControllerBase
 
 			if (!isPasswordValid)
 			{
+				_logger.LogWarning($"Invalid password for user with email {model.Email} during login.");
 				return BadRequest(new { message = "Invalid password." });
 			}
 
@@ -44,7 +39,7 @@ public class AccountController : ControllerBase
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, $"Error creating user. Details: {ex.Message}");
+			_logger.LogError(ex, $"Error during user login. Details: {ex.Message}");
 			return StatusCode(500, "An error occurred while processing your request.");
 		}
 	}
@@ -52,14 +47,17 @@ public class AccountController : ControllerBase
 	[HttpPost("register")]
 	public async Task<IActionResult> Register([FromBody] UserRegistrationModel model)
 	{
-		if (model == null || string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
-		{
-			return UnprocessableEntity(new { message = "Invalid Data" });
-		}
 		try
 		{
+			if (model == null || string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
+			{
+				_logger.LogWarning("Invalid user registration request. Model is null or has invalid properties.");
+				return UnprocessableEntity(new { message = "Invalid Data" });
+			}
+
 			if (await _dbContext.Users.AnyAsync(u => u.Email == model.Email))
 			{
+				_logger.LogWarning($"User with email {model.Email} already exists during registration.");
 				return BadRequest(new { message = "Invalid Data" });
 			}
 
@@ -75,6 +73,8 @@ public class AccountController : ControllerBase
 			_dbContext.Users.Add(newUser);
 			await _dbContext.SaveChangesAsync();
 
+			_logger.LogInformation($"User with email {newUser.Email} successfully registered.");
+
 			return Ok(new
 			{
 				newUser.Email,
@@ -84,8 +84,8 @@ public class AccountController : ControllerBase
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, "Error creatring user");
-			return StatusCode(500, "Anerror occurred while processing your request.");
+			_logger.LogError(ex, "Error creating user");
+			return StatusCode(500, "An error occurred while processing your request.");
 		}
 	}
 }
